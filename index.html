@@ -4,15 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registro de Usuario y Dispositivos</title>
+  <title>Plataforma IoT</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary-color: #4a6bff;
-      --secondary-color: #f8f9fa;
-      --accent-color: #ff6b6b;
-      --text-color: #333;
-      --light-text: #6c757d;
+      --primary-color: #2b6cb0;
+      --secondary-color: #4299e1;
+      --accent-color: #f56565;
+      --dark-color: #2d3748;
+      --light-color: #f7fafc;
+      --success-color: #48bb78;
+      --warning-color: #ed8936;
+      --text-color: #1a202c;
+      --light-text: #718096;
       --border-radius: 8px;
       --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       --transition: all 0.3s ease;
@@ -28,68 +32,118 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
       color: var(--text-color);
-      background-color: #f0f2f5;
+      background-color: #edf2f7;
       padding: 0;
       margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     
     .container {
-      max-width: 800px;
-      margin: 30px auto;
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 0 20px;
+      flex: 1;
     }
     
     header {
-      text-align: center;
-      margin-bottom: 30px;
+      background-color: var(--dark-color);
+      color: white;
       padding: 20px 0;
-      background-color: white;
       box-shadow: var(--box-shadow);
-      border-radius: var(--border-radius);
+      margin-bottom: 30px;
     }
     
-    h1 {
-      color: var(--primary-color);
-      margin-bottom: 10px;
-    }
-    
-    .tabs {
+    .header-content {
       display: flex;
-      margin-bottom: 20px;
-      background: white;
-      border-radius: var(--border-radius) var(--border-radius) 0 0;
-      overflow: hidden;
-      box-shadow: var(--box-shadow);
+      justify-content: space-between;
+      align-items: center;
     }
     
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 15px;
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo i {
+      color: var(--secondary-color);
+    }
+    
+    .auth-buttons {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
-      border-bottom: 3px solid transparent;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .tab:hover {
-      background-color: var(--secondary-color);
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
     }
     
-    .tab.active {
-      border-bottom: 3px solid var(--primary-color);
-      font-weight: bold;
-      color: var(--primary-color);
+    .btn-primary:hover {
+      background-color: #2c5282;
+      transform: translateY(-2px);
     }
     
-    .tab-content {
-      display: none;
-      background: white;
-      padding: 25px;
-      border-radius: 0 0 var(--border-radius) var(--border-radius);
+    .btn-outline {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 60px 0;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: var(--border-radius);
+      margin-bottom: 40px;
       box-shadow: var(--box-shadow);
     }
     
-    .tab-content.active {
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+    
+    .auth-section {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .auth-section.active {
       display: block;
       animation: fadeIn 0.5s ease;
     }
@@ -97,6 +151,16 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .auth-header h2 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
     }
     
     .form-group {
@@ -122,42 +186,42 @@
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
     }
     
-    button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 12px 20px;
+    .dashboard {
+      display: none;
+      background: white;
+      padding: 30px;
       border-radius: var(--border-radius);
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: var(--transition);
-      width: 100%;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .dashboard.active {
+      display: block;
+    }
+    
+    .dashboard-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
     }
     
-    button:hover {
-      background-color: #3a5bef;
-      transform: translateY(-2px);
-    }
-    
-    button:active {
-      transform: translateY(0);
+    .dashboard-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
     }
     
     .device-list {
-      margin-top: 25px;
+      margin-top: 30px;
     }
     
     .device-item {
-      background: var(--secondary-color);
-      padding: 15px;
+      background: var(--light-color);
+      padding: 20px;
       border-radius: var(--border-radius);
       margin-bottom: 15px;
       display: flex;
@@ -169,6 +233,7 @@
     
     .device-item:hover {
       transform: translateX(5px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     
     .device-info {
@@ -179,242 +244,534 @@
       font-weight: bold;
       color: var(--primary-color);
       margin-bottom: 5px;
+      font-size: 1.1rem;
     }
     
     .device-type {
       color: var(--light-text);
-      font-size: 14px;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
     }
     
-    .device-variables {
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--light-text);
-    }
-    
-    .delete-btn {
-      background: var(--accent-color);
+    .device-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background-color: var(--success-color);
       color: white;
-      border: none;
-      width: 30px;
-      height: 30px;
+    }
+    
+    .device-status.offline {
+      background-color: var(--light-text);
+    }
+    
+    .device-status.warning {
+      background-color: var(--warning-color);
+    }
+    
+    .device-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: var(--transition);
+      border: none;
+      color: white;
+    }
+    
+    .delete-btn {
+      background: var(--accent-color);
     }
     
     .delete-btn:hover {
-      background: #e05555;
+      background: #e53e3e;
+      transform: scale(1.1);
     }
     
-    .form-header {
+    .add-device-form {
+      margin-top: 40px;
+      padding: 20px;
+      background: var(--light-color);
+      border-radius: var(--border-radius);
+    }
+    
+    .add-device-form h3 {
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+    
+    .logout-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
+      gap: 5px;
     }
     
-    .form-header i {
-      font-size: 28px;
-      color: var(--primary-color);
-    }
-    
-    .form-header h2 {
-      color: var(--primary-color);
+    .logout-btn:hover {
+      background: #e53e3e;
     }
     
     @media (max-width: 768px) {
-      .container {
-        padding: 0 15px;
-      }
-      
-      .tabs {
+      .header-content {
         flex-direction: column;
+        gap: 15px;
       }
       
-      .tab {
-        padding: 12px;
+      .auth-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .hero {
+        padding: 40px 20px;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
       }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1><i class="fas fa-user-cog"></i> Sistema de Registro</h1>
-    <p>Gestiona usuarios y dispositivos electrónicos</p>
-  </header>
-  
-  <div class="tabs">
-    <div class="tab active" onclick="openTab('register')">
-      <i class="fas fa-user-plus"></i> Registro
+<header>
+  <div class="container header-content">
+    <div class="logo">
+      <i class="fas fa-cloud"></i>
+      <span>Plataforma IoT</span>
     </div>
-    <div class="tab" onclick="openTab('devices')">
-      <i class="fas fa-microchip"></i> Dispositivos
+    <div class="auth-buttons" id="mainAuthButtons">
+      <button class="btn btn-outline" onclick="showAuthSection('login')">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+      <button class="btn btn-primary" onclick="showAuthSection('register')">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+    </div>
+    <div id="dashboardAuthButtons" style="display: none;">
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
     </div>
   </div>
+</header>
+
+<div class="container">
+  <section class="hero" id="welcomeSection">
+    <h1>Gestiona tus dispositivos IoT</h1>
+    <p>Conecta, monitorea y controla todos tus dispositivos desde una sola plataforma</p>
+    <div class="auth-buttons">
+      <button class="btn btn-outline" onclick="showAuthSection('login')">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+      <button class="btn btn-primary" onclick="showAuthSection('register')">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+    </div>
+  </section>
   
-  <div id="register" class="tab-content active">
-    <div class="form-header">
-      <i class="fas fa-user-plus"></i>
-      <h2>Registro de Usuario</h2>
+  <!-- Sección de Registro -->
+  <section id="registerSection" class="auth-section">
+    <div class="auth-header">
+      <i class="fas fa-user-plus fa-2x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+      <h2>Crear una cuenta</h2>
+      <p>Regístrate para comenzar a usar la plataforma</p>
     </div>
     
     <form id="registerForm">
-      <div class="form-group">
-        <label for="name">Nombre completo</label>
-        <input type="text" id="name" required placeholder="Ej: Juan Pérez">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nombre completo</label>
+          <input type="text" id="name" required placeholder="Ej: Juan Pérez">
+        </div>
+        
+        <div class="form-group">
+          <label for="username">Nombre de usuario</label>
+          <input type="text" id="username" required placeholder="Ej: juanperez2023">
+        </div>
       </div>
       
-      <div class="form-group">
-        <label for="address">Dirección</label>
-        <input type="text" id="address" required placeholder="Ej: Calle 123 #45-67">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" required placeholder="Ej: usuario@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" required placeholder="Mínimo 8 caracteres">
+        </div>
       </div>
       
-      <div class="form-group">
-        <label for="country">País</label>
-        <select id="country" required>
-          <option value="" disabled selected>Selecciona tu país</option>
-          <option>Colombia</option>
-          <option>México</option>
-          <option>Argentina</option>
-          <option>Otro</option>
-        </select>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="address">Dirección</label>
+          <input type="text" id="address" required placeholder="Ej: Calle 123 #45-67">
+        </div>
+        
+        <div class="form-group">
+          <label for="city">Ciudad</label>
+          <input type="text" id="city" required placeholder="Ej: Bogotá">
+        </div>
       </div>
       
-      <div class="form-group">
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" required placeholder="Ej: usuario@example.com">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="country">País</label>
+          <select id="country" required>
+            <option value="" disabled selected>Selecciona tu país</option>
+            <option>Colombia</option>
+            <option>México</option>
+            <option>Argentina</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="company">Compañía (opcional)</label>
+          <input type="text" id="company" placeholder="Ej: Tech Solutions S.A.">
+        </div>
       </div>
       
-      <div class="form-group">
-        <label for="city">Ciudad</label>
-        <input type="text" id="city" required placeholder="Ej: Bogotá">
-      </div>
-      
-      <div class="form-group">
-        <label for="company">Compañía (opcional)</label>
-        <input type="text" id="company" placeholder="Ej: Tech Solutions S.A.">
-      </div>
-      
-      <div class="form-group">
-        <label for="username">Nombre de usuario</label>
-        <input type="text" id="username" required placeholder="Ej: juanperez2023">
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" required placeholder="Mínimo 8 caracteres">
-      </div>
-      
-      <button type="submit">
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
         <i class="fas fa-user-check"></i> Registrar Usuario
       </button>
+      
+      <p style="text-align: center; margin-top: 20px;">
+        ¿Ya tienes una cuenta? <a href="#" onclick="showAuthSection('login')" style="color: var(--primary-color); font-weight: 600;">Inicia sesión</a>
+      </p>
     </form>
-  </div>
+  </section>
   
-  <div id="devices" class="tab-content">
-    <div class="form-header">
-      <i class="fas fa-microchip"></i>
-      <h2>Dispositivos Electrónicos</h2>
+  <!-- Sección de Login -->
+  <section id="loginSection" class="auth-section">
+    <div class="auth-header">
+      <i class="fas fa-sign-in-alt fa-2x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+      <h2>Iniciar sesión</h2>
+      <p>Ingresa a tu cuenta para administrar tus dispositivos</p>
     </div>
     
-    <div class="form-group">
-      <label for="deviceName">Nombre del dispositivo</label>
-      <input type="text" id="deviceName" placeholder="Ej: Sensor de sala">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginUsername">Nombre de usuario</label>
+        <input type="text" id="loginUsername" required placeholder="Ingresa tu usuario">
+      </div>
+      
+      <div class="form-group">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" required placeholder="Ingresa tu contraseña">
+      </div>
+      
+      <button type="submit" class="btn btn-primary" style="width: 100%;">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+      
+      <p style="text-align: center; margin-top: 20px;">
+        ¿No tienes una cuenta? <a href="#" onclick="showAuthSection('register')" style="color: var(--primary-color); font-weight: 600;">Regístrate</a>
+      </p>
+    </form>
+  </section>
+  
+  <!-- Panel de Dashboard -->
+  <section id="dashboard" class="dashboard">
+    <div class="dashboard-header">
+      <h2 class="dashboard-title">
+        <i class="fas fa-tachometer-alt"></i> Panel de Control
+      </h2>
+      <div id="userWelcome">Bienvenido, <span id="usernameDisplay"></span></div>
     </div>
     
-    <div class="form-group">
-      <label for="deviceType">Tipo de dispositivo</label>
-      <select id="deviceType">
-        <option value="" disabled selected>Selecciona un tipo</option>
-        <option>Sensor de Temperatura</option>
-        <option>Cámara</option>
-        <option>Sensor de Movimiento</option>
-        <option>Otro</option>
-      </select>
-    </div>
-    
-    <button onclick="addDevice()">
-      <i class="fas fa-plus-circle"></i> Agregar Dispositivo
-    </button>
+    <h3><i class="fas fa-microchip"></i> Tus Dispositivos</h3>
     
     <div class="device-list" id="deviceList">
-      <div class="device-item">
-        <div class="device-info">
-          <div class="device-name">Sensor de sala</div>
-          <div class="device-type">Sensor de Temperatura</div>
-          <div class="device-variables">Variables: temperatura = 25°C (ejemplo)</div>
-        </div>
-        <button class="delete-btn" onclick="this.parentElement.remove()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+      <!-- Los dispositivos se agregarán aquí dinámicamente -->
     </div>
-  </div>
+    
+    <div class="add-device-form">
+      <h3><i class="fas fa-plus-circle"></i> Agregar Nuevo Dispositivo</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="deviceName">Nombre del dispositivo</label>
+          <input type="text" id="deviceName" placeholder="Ej: Sensor de sala">
+        </div>
+        
+        <div class="form-group">
+          <label for="deviceType">Tipo de dispositivo</label>
+          <select id="deviceType">
+            <option value="" disabled selected>Selecciona un tipo</option>
+            <option>Sensor de Temperatura</option>
+            <option>Cámara IP</option>
+            <option>Sensor de Movimiento</option>
+            <option>Actuador</option>
+            <option>Dispositivo Alexa</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      
+      <button onclick="addDevice()" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Agregar Dispositivo
+      </button>
+    </div>
+  </section>
 </div>
 
+<footer>
+  <div class="container">
+    <p>&copy; 2023 Plataforma IoT. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
 <script>
-  // Función para cambiar entre pestañas
-  function openTab(tabId) {
-    // Oculta todos los contenidos de pestañas
-    const tabContents = document.getElementsByClassName('tab-content');
-    for (let i = 0; i < tabContents.length; i++) {
-      tabContents[i].classList.remove('active');
-    }
+  // Simulación de base de datos de usuarios y dispositivos
+  const users = [];
+  const devices = {};
+  
+  // Mostrar sección de autenticación
+  function showAuthSection(section) {
+    document.getElementById('welcomeSection').style.display = 'none';
+    document.getElementById('registerSection').classList.remove('active');
+    document.getElementById('loginSection').classList.remove('active');
+    document.getElementById('dashboard').classList.remove('active');
     
-    // Desactiva todos los botones de pestañas
-    const tabs = document.getElementsByClassName('tab');
-    for (let i = 0; i < tabs.length; i++) {
-      tabs[i].classList.remove('active');
+    if (section === 'register') {
+      document.getElementById('registerSection').classList.add('active');
+    } else if (section === 'login') {
+      document.getElementById('loginSection').classList.add('active');
     }
-    
-    // Activa la pestaña seleccionada
-    document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
   }
   
-  // Función para agregar dispositivos
-  const deviceList = document.getElementById("deviceList");
+  // Volver a la página de inicio
+  function showWelcome() {
+    document.getElementById('welcomeSection').style.display = 'block';
+    document.getElementById('registerSection').classList.remove('active');
+    document.getElementById('loginSection').classList.remove('active');
+    document.getElementById('dashboard').classList.remove('active');
+    document.getElementById('mainAuthButtons').style.display = 'flex';
+    document.getElementById('dashboardAuthButtons').style.display = 'none';
+  }
   
-  function addDevice() {
-    const name = document.getElementById("deviceName").value;
-    const type = document.getElementById("deviceType").value;
+  // Mostrar dashboard
+  function showDashboard(username) {
+    document.getElementById('welcomeSection').style.display = 'none';
+    document.getElementById('registerSection').classList.remove('active');
+    document.getElementById('loginSection').classList.remove('active');
+    document.getElementById('dashboard').classList.add('active');
+    document.getElementById('mainAuthButtons').style.display = 'none';
+    document.getElementById('dashboardAuthButtons').style.display = 'block';
     
-    if (name.trim() === "" || type === "") {
-      return alert("Por favor completa todos los campos del dispositivo");
+    // Mostrar nombre de usuario
+    document.getElementById('usernameDisplay').textContent = username;
+    
+    // Cargar dispositivos del usuario
+    loadDevices(username);
+  }
+  
+  // Cargar dispositivos del usuario
+  function loadDevices(username) {
+    const deviceList = document.getElementById('deviceList');
+    deviceList.innerHTML = '';
+    
+    if (devices[username] && devices[username].length > 0) {
+      devices[username].forEach(device => {
+        addDeviceToUI(device.name, device.type, false);
+      });
+    } else {
+      deviceList.innerHTML = '<p>No tienes dispositivos registrados. Agrega tu primer dispositivo.</p>';
+    }
+  }
+  
+  // Registrar nuevo usuario
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value;
+    const name = document.getElementById('name').value;
+    
+    // Verificar si el usuario ya existe
+    if (users.some(user => user.username === username)) {
+      alert('El nombre de usuario ya está en uso');
+      return;
     }
     
-    const item = document.createElement("div");
-    item.className = "device-item";
+    // Registrar nuevo usuario
+    users.push({
+      username,
+      password, // En una aplicación real, esto debería estar encriptado
+      email,
+      name
+    });
+    
+    // Crear lista de dispositivos para el usuario
+    devices[username] = [];
+    
+    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+    showAuthSection('login');
+  });
+  
+  // Iniciar sesión
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    // Verificar credenciales
+    const user = users.find(user => user.username === username && user.password === password);
+    
+    if (user) {
+      showDashboard(username);
+    } else {
+      alert('Usuario o contraseña incorrectos');
+    }
+  });
+  
+  // Cerrar sesión
+  function logout() {
+    showWelcome();
+  }
+  
+  // Agregar dispositivo
+  function addDevice() {
+    const username = document.getElementById('usernameDisplay').textContent;
+    const name = document.getElementById('deviceName').value;
+    const type = document.getElementById('deviceType').value;
+    
+    if (!name || !type) {
+      alert('Por favor completa todos los campos');
+      return;
+    }
+    
+    // Agregar dispositivo a la lista del usuario
+    devices[username].push({
+      name,
+      type,
+      status: 'online',
+      lastUpdate: new Date().toLocaleString()
+    });
+    
+    // Agregar dispositivo a la UI
+    addDeviceToUI(name, type, true);
+    
+    // Limpiar campos
+    document.getElementById('deviceName').value = '';
+    document.getElementById('deviceType').selectedIndex = 0;
+  }
+  
+  // Agregar dispositivo a la interfaz
+  function addDeviceToUI(name, type, animate) {
+    const deviceList = document.getElementById('deviceList');
+    
+    // Si es el primer dispositivo, eliminar el mensaje de "no hay dispositivos"
+    if (deviceList.innerHTML.includes('No tienes dispositivos')) {
+      deviceList.innerHTML = '';
+    }
+    
+    const statuses = ['online', 'offline', 'warning'];
+    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+    
+    const item = document.createElement('div');
+    item.className = 'device-item';
+    if (animate) {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+    }
+    
     item.innerHTML = `
       <div class="device-info">
         <div class="device-name">${name}</div>
         <div class="device-type">${type}</div>
-        <div class="device-variables">Variables: temperatura = ${Math.floor(Math.random() * 10) + 20}°C (simulado)</div>
+        <div style="margin-top: 10px;">
+          <span class="device-status ${randomStatus}">${randomStatus === 'online' ? 'En línea' : randomStatus === 'offline' ? 'Desconectado' : 'Advertencia'}</span>
+          <span style="color: var(--light-text); font-size: 0.8rem; margin-left: 10px;">
+            <i class="far fa-clock"></i> ${new Date().toLocaleString()}
+          </span>
+        </div>
       </div>
-      <button class="delete-btn" onclick="this.parentElement.remove()">
-        <i class="fas fa-times"></i>
-      </button>
+      <div class="device-actions">
+        <button class="action-btn delete-btn" onclick="removeDevice(this, '${name}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
     `;
     
     deviceList.appendChild(item);
     
-    // Limpiar campos
-    document.getElementById("deviceName").value = "";
-    document.getElementById("deviceType").selectedIndex = 0;
+    if (animate) {
+      setTimeout(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+        item.style.transition = 'all 0.3s ease';
+      }, 10);
+    }
   }
   
-  // Manejar el envío del formulario
-  document.getElementById("registerForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    alert("Usuario registrado con éxito (simulación)");
-    // Aquí iría la lógica para enviar los datos a un servidor
-  });
+  // Eliminar dispositivo
+  function removeDevice(button, deviceName) {
+    const username = document.getElementById('usernameDisplay').textContent;
+    const deviceItem = button.closest('.device-item');
+    
+    // Animación para eliminar
+    deviceItem.style.transform = 'translateX(100%)';
+    deviceItem.style.opacity = '0';
+    deviceItem.style.transition = 'all 0.3s ease';
+    
+    setTimeout(() => {
+      // Eliminar de la interfaz
+      deviceItem.remove();
+      
+      // Eliminar de la "base de datos"
+      devices[username] = devices[username].filter(device => device.name !== deviceName);
+      
+      // Si no quedan dispositivos, mostrar mensaje
+      if (devices[username].length === 0) {
+        const deviceList = document.getElementById('deviceList');
+        deviceList.innerHTML = '<p>No tienes dispositivos registrados. Agrega tu primer dispositivo.</p>';
+      }
+    }, 300);
+  }
 </script>
 
 </body>
