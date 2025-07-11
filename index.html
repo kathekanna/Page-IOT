@@ -6,157 +6,488 @@
   <title>Plataforma IoT</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Mantengo todo tu CSS original */
-    /* ... (omitido aquí por brevedad) ... */
+    :root {
+      --color-primario: #1a365d; /* Azul oscuro */
+      --color-secundario: #2b6cb0;
+      --color-destacado: #f56565;
+      --color-oscuro: #1a202c; /* Negro azulado */
+      --color-claro: #f7fafc;
+      --color-exito: #48bb78;
+      --color-advertencia: #ed8936;
+      --color-texto: #1a202c;
+      --color-texto-claro: #718096;
+      --borde-redondeado: 8px;
+      --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transicion: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--color-texto);
+      background-color: #edf2f7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .contenedor {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+    
+    header {
+      background-color: var(--color-oscuro);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--sombra);
+      margin-bottom: 30px;
+    }
+    
+    .contenido-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .botones-autenticacion {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--borde-redondeado);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transicion);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primario {
+      background-color: var(--color-primario);
+      color: white;
+      border: none;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 60px 0;
+      background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+      color: white;
+      border-radius: var(--borde-redondeado);
+      margin-bottom: 40px;
+    }
+    
+    .seccion-autenticacion {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: var(--borde-redondeado);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .seccion-autenticacion.activa {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .panel {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: var(--borde-redondeado);
+    }
+    
+    .panel.activo { display: block; }
+    
+    .device-list {
+      margin-top: 30px;
+    }
+    
+    .item-dispositivo {
+      background: var(--color-claro);
+      padding: 20px;
+      border-radius: var(--borde-redondeado);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--color-primario);
+    }
+    
+    .estado-dispositivo {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+    }
+    
+    .online { background-color: var(--color-exito); }
+    .desconectado { background-color: var(--color-texto-claro); }
+    
+    footer {
+      background-color: var(--color-oscuro);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+    
+    /* Estilos adicionales simplificados */
+    .formulario-agregar, .seccion-perfil {
+      background: var(--color-claro);
+      padding: 20px;
+      border-radius: var(--borde-redondeado);
+      margin-bottom: 20px;
+    }
+    
+    .btn-eliminar {
+      background: var(--color-destacado);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .contenido-cabecera, .fila-formulario {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Mantengo todo tu HTML de estructura: header, secciones, formularios, etc. -->
-  <!-- ... (omitido por brevedad) ... -->
 
-  <script>
-    // Variables globales con persistencia
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    let dispositivos = JSON.parse(localStorage.getItem('dispositivos')) || {};
-    let usuarioActual = null;
+<header>
+  <div class="contenedor contenido-cabecera">
+    <div class="logo">
+      <i class="fas fa-cloud"></i>
+      <span>Plataforma IoT</span>
+    </div>
+    <div class="botones-autenticacion" id="botonesAutenticacionPrincipal">
+      <button class="btn btn-outline" onclick="showAuthSection('login')">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+      <button class="btn btn-primario" onclick="showAuthSection('registro')">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+    </div>
+    <div id="botonesAutenticacionPanel" style="display: none;">
+      <button class="btn btn-primario" onclick="mostrarPerfil()">
+        <i class="fas fa-user-circle"></i> <span id="nombreUsuario"></span>
+      </button>
+      <button class="btn btn-outline" onclick="cerrarSesion()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </div>
+  </div>
+</header>
 
-    function guardarDatos() {
-      localStorage.setItem('usuarios', JSON.stringify(usuarios));
-      localStorage.setItem('dispositivos', JSON.stringify(dispositivos));
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('tipoDispositivo').addEventListener('change', function() {
-        const contenedor = document.getElementById('contenidoCamposDinamicos');
-        const seccionCampos = document.getElementById('camposDinamicos');
-        contenedor.innerHTML = '';
-        seccionCampos.style.display = 'none';
-
-        if (this.value === 'Sensor de Temperatura') {
-          contenedor.innerHTML = `
-            <div class="grupo-formulario">
-              <label>Unidad de medida</label>
-              <select class="campo-adicional" id="unidadTemperatura">
-                <option>Celsius (°C)</option>
-                <option>Fahrenheit (°F)</option>
-                <option>Kelvin (K)</option>
-              </select>
-            </div>
-            <div class="grupo-formulario">
-              <label>Rango de medición</label>
-              <input type="text" class="campo-adicional" id="rangoTemperatura" placeholder="Ej: -40 a 125°C">
-            </div>`;
-          seccionCampos.style.display = 'block';
-        } else if (this.value === 'Cámara IP') {
-          contenedor.innerHTML = `
-            <div class="grupo-formulario">
-              <label>Resolución</label>
-              <input type="text" class="campo-adicional" id="resolucionCamara" placeholder="Ej: 1920x1080">
-            </div>
-            <div class="grupo-formulario">
-              <label>Protocolo</label>
-              <select class="campo-adicional" id="protocoloCamara">
-                <option>RTSP</option>
-                <option>ONVIF</option>
-                <option>HTTP</option>
-              </select>
-            </div>`;
-          seccionCampos.style.display = 'block';
-        }
-      });
-    });
-
-    function agregarDispositivo() {
-      const usuario = usuarioActual.usuario;
-      const nombre = document.getElementById('nombreDispositivo').value;
-      const tipo = document.getElementById('tipoDispositivo').value;
-      if (!nombre || !tipo) return alert('Complete los campos.');
-
-      const nuevoDispositivo = { nombre, tipo, estado: 'online', ultimaActualizacion: new Date().toLocaleString() };
-      const campos = document.querySelectorAll('.campo-adicional');
-      campos.forEach(c => nuevoDispositivo[c.id] = c.value);
-
-      if (!dispositivos[usuario]) dispositivos[usuario] = [];
-      dispositivos[usuario].push(nuevoDispositivo);
-      guardarDatos();
-      agregarDispositivoAInterfaz(nuevoDispositivo);
-
-      document.getElementById('nombreDispositivo').value = '';
-      document.getElementById('tipoDispositivo').selectedIndex = 0;
-      document.getElementById('camposDinamicos').style.display = 'none';
-    }
-
-    function agregarDispositivoAInterfaz(d) {
-      const lista = document.getElementById('device-list');
-      if (lista.innerHTML.includes('No tienes')) lista.innerHTML = '';
-      const item = document.createElement('div');
-      item.className = 'item-dispositivo';
-
-      let props = '';
-      for (let k in d) {
-        if (!['nombre','tipo','estado','ultimaActualizacion'].includes(k)) {
-          props += `<div><small>${k}: ${d[k]}</small></div>`;
-        }
-      }
-
-      item.innerHTML = `
-        <div class="info-dispositivo">
-          <div class="nombre-dispositivo">${d.nombre}</div>
-          <div class="tipo-dispositivo">${d.tipo}</div>
-          ${props}
-          <div style="margin-top: 10px;">
-            <span class="estado-dispositivo">${d.estado}</span>
-            <span style="color: #718096; font-size: 0.8rem; margin-left: 10px;">
-              <i class="far fa-clock"></i> ${d.ultimaActualizacion}
-            </span>
-          </div>
+<div class="contenedor">
+  <section class="hero" id="seccionBienvenida">
+    <h1>Gestiona tus dispositivos IoT</h1>
+    <p>Conecta, monitorea y controla todos tus dispositivos</p>
+    <div class="botones-autenticacion">
+      <button class="btn btn-outline" onclick="showAuthSection('login')">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+      <button class="btn btn-primario" onclick="showAuthSection('registro')">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+    </div>
+  </section>
+  
+  <!-- Secciones de autenticación -->
+  <section id="seccionRegistro" class="seccion-autenticacion">
+    <h2><i class="fas fa-user-plus"></i> Crear cuenta</h2>
+    <form id="formularioRegistro" onsubmit="return validarRegistro()">
+      <div class="fila-formulario">
+        <div class="grupo-formulario">
+          <input type="text" id="nombre" required placeholder="Nombre completo">
         </div>
-        <div class="acciones-dispositivo">
-          <button class="btn-accion btn-eliminar" onclick="eliminarDispositivo('${d.nombre}')">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>`;
-      lista.appendChild(item);
-    }
+        <div class="grupo-formulario">
+          <input type="text" id="usuario" required placeholder="Nombre de usuario">
+        </div>
+      </div>
+      <div class="grupo-formulario">
+        <input type="password" id="contrasena" required placeholder="Contraseña (mínimo 8 caracteres)">
+      </div>
+      <button type="submit" class="btn btn-primario">
+        <i class="fas fa-user-check"></i> Registrar
+      </button>
+    </form>
+  </section>
+  
+  <section id="seccionLogin" class="seccion-autenticacion">
+    <h2><i class="fas fa-sign-in-alt"></i> Iniciar sesión</h2>
+    <form id="formularioLogin">
+      <div class="grupo-formulario">
+        <input type="text" id="usuarioLogin" required placeholder="Usuario">
+      </div>
+      <div class="grupo-formulario">
+        <input type="password" id="contrasenaLogin" required placeholder="Contraseña">
+      </div>
+      <button type="submit" class="btn btn-primario">
+        <i class="fas fa-sign-in-alt"></i> Ingresar
+      </button>
+    </form>
+  </section>
+  
+  <!-- Panel principal -->
+  <section id="panel" class="panel">
+    <div class="cabecera-panel">
+      <h2><i class="fas fa-tachometer-alt"></i> Panel de Control</h2>
+      <div id="bienvenidaUsuario">Bienvenido, <span id="nombreUsuarioPanel"></span></div>
+    </div>
+    
+    <!-- Sección de perfil -->
+    <div id="seccionPerfil" class="seccion-perfil" style="display: none;">
+      <h3><i class="fas fa-user-cog"></i> Mi Perfil</h3>
+      <form id="formularioPerfil">
+        <div class="grupo-formulario">
+          <input type="password" id="nuevaContrasena" placeholder="Nueva contraseña">
+        </div>
+        <button type="submit" class="btn btn-primario">
+          <i class="fas fa-save"></i> Actualizar
+        </button>
+      </form>
+    </div>
+    
+    <!-- Dispositivos -->
+    <div class="device-list" id="device-list"></div>
+    
+    <!-- Formulario para agregar dispositivos -->
+    <div class="formulario-agregar">
+      <h3><i class="fas fa-plus-circle"></i> Agregar Dispositivo</h3>
+      <div class="grupo-formulario">
+        <input type="text" id="nombreDispositivo" placeholder="Nombre del dispositivo">
+      </div>
+      <div class="grupo-formulario">
+        <select id="tipoDispositivo">
+          <option value="" disabled selected>Tipo de dispositivo</option>
+          <option>Sensor de Temperatura</option>
+          <option>Cámara IP</option>
+        </select>
+      </div>
+      <div class="grupo-formulario" id="camposAdicionales"></div>
+      <button onclick="agregarDispositivo()" class="btn btn-primario">
+        <i class="fas fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+    
+    <!-- Conexión con backend -->
+    <div class="conexion-backend">
+      <button onclick="llamarBackend()" class="btn btn-primario">
+        <i class="fas fa-server"></i> Probar Backend
+      </button>
+      <p id="saludo-backend"></p>
+    </div>
+  </section>
+</div>
 
-    function eliminarDispositivo(nombre) {
-      const usuario = usuarioActual.usuario;
-      dispositivos[usuario] = dispositivos[usuario].filter(d => d.nombre !== nombre);
-      guardarDatos();
-      cargarDispositivos(usuario);
-    }
+<footer>
+  <div class="contenedor">
+    <p>&copy; 2023 Plataforma IoT</p>
+  </div>
+</footer>
 
-    function cargarDispositivos(usuario) {
-      const lista = document.getElementById('device-list');
-      lista.innerHTML = '';
-      const datos = dispositivos[usuario] || [];
-      if (datos.length === 0) {
-        lista.innerHTML = '<p>No tienes dispositivos registrados.</p>';
-      } else {
-        datos.forEach(d => agregarDispositivoAInterfaz(d));
+<script>
+  // Datos y estado
+  let usuarioActual = null;
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  const dispositivos = JSON.parse(localStorage.getItem('dispositivos')) || {};
+
+  // Inicialización
+  document.addEventListener('DOMContentLoaded', () => {
+    const usuarioGuardado = localStorage.getItem('usuarioActual');
+    if(usuarioGuardado) iniciarSesion(JSON.parse(usuarioGuardado));
+    
+    // Configurar campos adicionales dinámicos
+    document.getElementById('tipoDispositivo').addEventListener('change', function() {
+      const campos = document.getElementById('camposAdicionales');
+      campos.innerHTML = '';
+      
+      if(this.value === 'Sensor de Temperatura') {
+        campos.innerHTML = `
+          <input type="text" id="unidadTemp" placeholder="Unidad (C/F/K)" class="campo-adicional">
+          <input type="number" id="rangoTemp" placeholder="Rango máximo" class="campo-adicional">
+        `;
+      } else if(this.value === 'Cámara IP') {
+        campos.innerHTML = `
+          <input type="text" id="resolucionCamara" placeholder="Resolución (ej: 1080p)" class="campo-adicional">
+        `;
       }
-    }
-
-    // Resto de funciones showAuthSection, mostrarBienvenida, mostrarPanel, etc. sin cambios.
-    // Registro, login, edición de perfil: asegúrate de actualizar usuario en array usuarios:
-
-    document.getElementById('formularioPerfil').addEventListener('submit', e => {
-      e.preventDefault();
-      const actual = document.getElementById('contrasenaActual').value;
-      const nueva = document.getElementById('nuevaContrasena').value;
-      if (actual !== usuarioActual.contrasena) return alert('Contraseña incorrecta.');
-      if (nueva && nueva.length < 8) return alert('La nueva contraseña es muy corta.');
-
-      usuarioActual.nombre = document.getElementById('perfilNombre').value;
-      usuarioActual.correo = document.getElementById('perfilEmail').value;
-      if (nueva) usuarioActual.contrasena = nueva;
-
-      const index = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
-      if (index !== -1) usuarios[index] = { ...usuarioActual };
-      guardarDatos();
-
-      alert('Perfil actualizado correctamente.');
     });
-  </script>
+  });
+
+  // Funciones principales
+  function showAuthSection(section) {
+    document.querySelectorAll('.seccion-autenticacion').forEach(s => s.classList.remove('activa'));
+    document.getElementById('seccionBienvenida').style.display = 'none';
+    
+    if(section) document.getElementById(`seccion${section.charAt(0).toUpperCase() + section.slice(1)}`).classList.add('activa');
+  }
+
+  function validarRegistro() {
+    const pass = document.getElementById('contrasena').value;
+    if(pass.length < 8) {
+      alert('La contraseña debe tener al menos 8 caracteres');
+      return false;
+    }
+    return true;
+  }
+
+  function iniciarSesion(usuario) {
+    usuarioActual = usuario;
+    localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+    mostrarPanel();
+  }
+
+  function mostrarPanel() {
+    showAuthSection();
+    document.getElementById('panel').classList.add('activo');
+    document.getElementById('botonesAutenticacionPrincipal').style.display = 'none';
+    document.getElementById('botonesAutenticacionPanel').style.display = 'flex';
+    document.getElementById('nombreUsuarioPanel').textContent = usuarioActual.usuario;
+    
+    // Cargar dispositivos
+    cargarDispositivos();
+  }
+
+  function cargarDispositivos() {
+    const lista = document.getElementById('device-list');
+    lista.innerHTML = dispositivos[usuarioActual.usuario]?.map(disp => `
+      <div class="item-dispositivo">
+        <div>
+          <div class="nombre-dispositivo">${disp.nombre}</div>
+          <div class="tipo-dispositivo">${disp.tipo}</div>
+          <span class="estado-dispositivo online">En línea</span>
+        </div>
+        <button class="btn-eliminar" onclick="eliminarDispositivo('${disp.nombre}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `).join('') || '<p>No hay dispositivos registrados</p>';
+  }
+
+  function agregarDispositivo() {
+    const nombre = document.getElementById('nombreDispositivo').value;
+    const tipo = document.getElementById('tipoDispositivo').value;
+    
+    if(!nombre || !tipo) {
+      alert('Complete todos los campos');
+      return;
+    }
+    
+    // Crear dispositivo con campos adicionales
+    const nuevoDispositivo = { nombre, tipo };
+    const camposAdicionales = document.querySelectorAll('.campo-adicional');
+    
+    camposAdicionales.forEach(campo => {
+      nuevoDispositivo[campo.id] = campo.value;
+    });
+    
+    if(!dispositivos[usuarioActual.usuario]) dispositivos[usuarioActual.usuario] = [];
+    dispositivos[usuarioActual.usuario].push(nuevoDispositivo);
+    
+    localStorage.setItem('dispositivos', JSON.stringify(dispositivos));
+    cargarDispositivos();
+  }
+
+  function eliminarDispositivo(nombre) {
+    dispositivos[usuarioActual.usuario] = dispositivos[usuarioActual.usuario].filter(d => d.nombre !== nombre);
+    localStorage.setItem('dispositivos', JSON.stringify(dispositivos));
+    cargarDispositivos();
+  }
+
+  // Backend
+  async function llamarBackend() {
+    try {
+      const res = await fetch("http://localhost:8000/api/saludo");
+      const data = await res.json();
+      document.getElementById("saludo-backend").innerText = data.mensaje;
+    } catch (e) {
+      document.getElementById("saludo-backend").innerText = "Error conectando al backend";
+    }
+  }
+
+  // Event listeners
+  document.getElementById('formularioRegistro').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nuevoUsuario = {
+      usuario: document.getElementById('usuario').value,
+      contrasena: document.getElementById('contrasena').value,
+      nombre: document.getElementById('nombre').value
+    };
+    
+    usuarios.push(nuevoUsuario);
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    iniciarSesion(nuevoUsuario);
+  });
+
+  document.getElementById('formularioLogin').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const usuario = document.getElementById('usuarioLogin').value;
+    const contrasena = document.getElementById('contrasenaLogin').value;
+    
+    const user = usuarios.find(u => u.usuario === usuario && u.contrasena === contrasena);
+    if(user) iniciarSesion(user);
+    else alert('Credenciales incorrectas');
+  });
+
+  document.getElementById('formularioPerfil').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nuevaContrasena = document.getElementById('nuevaContrasena').value;
+    if(nuevaContrasena) {
+      usuarioActual.contrasena = nuevaContrasena;
+      localStorage.setItem('usuarioActual', JSON.stringify(usuarioActual));
+      alert('Contraseña actualizada');
+    }
+  });
+
+  function cerrarSesion() {
+    usuarioActual = null;
+    localStorage.removeItem('usuarioActual');
+    location.reload();
+  }
+
+  function mostrarPerfil() {
+    const perfil = document.getElementById('seccionPerfil');
+    perfil.style.display = perfil.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
 </body>
 </html>
